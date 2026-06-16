@@ -1,0 +1,22 @@
+{
+  "name": "interseguro-node-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Express API that calculates statistics for matrices returned by the Go API.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
