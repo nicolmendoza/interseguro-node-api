@@ -1,12 +1,23 @@
 import cors from 'cors';
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import swaggerUi from 'swagger-ui-express';
-import { openApiSpec } from './openapi.js';
-import { calculateStats, validateMatrices } from './stats.js';
+import { calculateStats, validateMatrices } from '../domain/stats.js';
+import { createOpenApiSpec } from '../openapi.js';
+import { authenticate } from './auth.js';
 
-export function createApp({ jwtSecret = 'interseguro-secret' } = {}) {
+export function createApp({ jwtSecret, goApiUrl, nodeApiUrl }) {
+  if (!jwtSecret) {
+    throw new Error('jwtSecret is required');
+  }
+  if (!goApiUrl) {
+    throw new Error('goApiUrl is required');
+  }
+  if (!nodeApiUrl) {
+    throw new Error('nodeApiUrl is required');
+  }
+
   const app = express();
+  const openApiSpec = createOpenApiSpec({ goApiUrl, nodeApiUrl });
 
   app.use(cors());
   app.use(express.json({ limit: '1mb' }));
@@ -36,22 +47,4 @@ export function createApp({ jwtSecret = 'interseguro-secret' } = {}) {
   });
 
   return app;
-}
-
-function authenticate(jwtSecret) {
-  return (req, res, next) => {
-    const header = req.get('Authorization') ?? '';
-    const [scheme, token] = header.split(' ');
-
-    if (scheme !== 'Bearer' || !token) {
-      return res.status(401).json({ error: 'missing bearer token' });
-    }
-
-    try {
-      jwt.verify(token, jwtSecret);
-      return next();
-    } catch {
-      return res.status(401).json({ error: 'invalid token' });
-    }
-  };
 }

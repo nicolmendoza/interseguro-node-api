@@ -2,11 +2,15 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
-import { createApp } from '../src/app.js';
+import { createApp } from '../src/http/app.js';
 
 describe('POST /stats', () => {
   const jwtSecret = 'test-secret';
-  const app = createApp({ jwtSecret });
+  const app = createApp({
+    jwtSecret,
+    goApiUrl: 'http://go-api.test',
+    nodeApiUrl: 'http://node-api.test',
+  });
 
   it('requires JWT', async () => {
     const response = await request(app).post('/stats').send({ matrices: [[[1]]] });

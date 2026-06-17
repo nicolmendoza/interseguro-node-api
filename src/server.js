@@ -1,8 +1,8 @@
-import { createApp } from './app.js';
+import { createApp } from './http/app.js';
+import { getConfig } from './config.js';
 
-const port = process.env.PORT ?? 3001;
-const jwtSecret = process.env.JWT_SECRET ?? 'interseguro-secret';
+const { port, jwtSecret, goApiUrl, nodeApiUrl } = getConfig();
 
-createApp({ jwtSecret }).listen(port, () => {
+createApp({ jwtSecret, goApiUrl, nodeApiUrl }).listen(port, () => {
   console.log(`Node API listening on port ${port}`);
 });

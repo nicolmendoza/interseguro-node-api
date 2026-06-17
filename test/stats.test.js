@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { calculateStats, validateMatrices } from '../src/stats.js';
+import { calculateStats, validateMatrices } from '../src/domain/stats.js';
 
 describe('calculateStats', () => {
   it('calculates max, min, average, sum and diagonal flags', () => {
