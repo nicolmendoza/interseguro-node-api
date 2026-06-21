@@ -10,31 +10,27 @@ Su responsabilidad es recibir matrices calculadas por la API Go y devolver estad
 - npm
 - Docker
 
-La forma recomendada de levantar el proyecto es con Docker, porque el reto solicita contenerizar las aplicaciones y facilita ejecutar los tres servicios con configuracion consistente.
+La forma recomendada de levantar el proyecto es con Docker, porque el reto solicita contenerizar las aplicaciones y facilita ejecutar el servicio con configuracion consistente.
 
 ## Produccion
 
-Servicios desplegados en Google Cloud Run:
+Servicio desplegado en Google Cloud Run:
 
 ```txt
 Node API: https://interseguro-node-api-745150536858.europe-west1.run.app
 Swagger:  https://interseguro-node-api-745150536858.europe-west1.run.app/docs
 OpenAPI:  https://interseguro-node-api-745150536858.europe-west1.run.app/openapi.json
-Go API:   https://interseguro-go-api-745150536858.europe-west1.run.app
-Frontend: https://interseguro-technical-challenge-745150536858.europe-west1.run.app/
 ```
 
 La documentacion Swagger se sirve desde la API Node y usa las variables `GO_API_URL` y `NODE_API_URL` para mostrar los servidores disponibles en OpenAPI.
 
 ## Despliegue en Google Cloud
 
-Los tres servicios fueron desplegados en Google Cloud Run usando contenedores Docker:
+Este servicio fue desplegado en Google Cloud Run usando un contenedor Docker:
 
 - `interseguro-node-api`: API Node/Express para estadisticas y documentacion Swagger/OpenAPI.
-- `interseguro-go-api`: API Go/Fiber para QR, rotacion y orquestacion.
-- `interseguro-frontend`: aplicacion Next.js que consume ambas APIs.
 
-Cada servicio se construye como imagen Docker y se despliega de forma independiente en Cloud Run. El codigo fuente esta versionado en GitHub y Cloud Build queda conectado al repositorio correspondiente para compilar la imagen y publicar una nueva revision cuando se suben cambios.
+El servicio se construye como imagen Docker y se despliega de forma independiente en Cloud Run. El codigo fuente esta versionado en GitHub y Cloud Build queda conectado al repositorio para compilar la imagen y publicar una nueva revision cuando se suben cambios.
 
 Las variables de entorno se configuran desde Cloud Run, no quedan hardcodeadas en el codigo fuente. En produccion la API Node usa:
 
@@ -96,13 +92,6 @@ Swagger:
 
 ```txt
 http://localhost:3001/docs
-```
-
-## Ejecutar en local sin Docker solo para desarrollo
-
-```bash
-npm install
-npm run dev
 ```
 
 ## Tests
@@ -251,7 +240,6 @@ Ejemplo response:
 ## Scripts principales
 
 ```bash
-npm run dev
 npm run build
 npm run start
 npm run typecheck
