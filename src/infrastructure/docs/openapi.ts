@@ -155,7 +155,7 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
           },
           responses: {
             200: {
-              description: 'Resultado de la factorización QR',
+              description: 'Resultado de la factorizacion QR',
               content: {
                 'application/json': {
                   schema: { $ref: '#/components/schemas/QRResult' },
