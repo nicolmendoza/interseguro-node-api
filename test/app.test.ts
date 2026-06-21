@@ -7,7 +7,6 @@ describe('POST /stats', () => {
   const jwtSecret = 'test-secret';
   const app = createApp({
     jwtSecret,
-    goApiUrl: 'http://go-api-test.com',
     nodeApiUrl: 'http://node-api-test.com',
   });
 

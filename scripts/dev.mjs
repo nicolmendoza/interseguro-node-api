@@ -8,7 +8,6 @@ const child = spawn('npx', ['tsx', 'watch', 'src/transport/http/server.ts'], {
     ...process.env,
     PORT: process.env.PORT || '3001',
     JWT_SECRET: process.env.JWT_SECRET || 'local-development-secret',
-    GO_API_URL: process.env.GO_API_URL || 'http://localhost:3000',
     NODE_API_URL: process.env.NODE_API_URL || 'http://localhost:3001',
   },
 });

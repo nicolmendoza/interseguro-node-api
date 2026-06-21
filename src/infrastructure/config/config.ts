@@ -1,7 +1,6 @@
 export type Config = {
   port: string;
   jwtSecret: string;
-  goApiUrl?: string;
   nodeApiUrl?: string;
 };
 
@@ -9,7 +8,6 @@ export function getConfig(env: NodeJS.ProcessEnv = process.env): Config {
   return {
     port: getRequiredEnv(env, 'PORT'),
     jwtSecret: getRequiredEnv(env, 'JWT_SECRET'),
-    goApiUrl: getOptionalEnv(env, 'GO_API_URL'),
     nodeApiUrl: getOptionalEnv(env, 'NODE_API_URL'),
   };
 }

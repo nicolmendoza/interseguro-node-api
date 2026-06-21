@@ -20,7 +20,7 @@ Swagger:  https://interseguro-node-api-745150536858.europe-west1.run.app/docs
 OpenAPI:  https://interseguro-node-api-745150536858.europe-west1.run.app/openapi.json
 ```
 
-La documentacion Swagger se sirve desde la API Node y usa las variables `GO_API_URL` y `NODE_API_URL` para mostrar los servidores disponibles en OpenAPI.
+La documentacion Swagger de este servicio describe los endpoints propios de la API Node.
 
 ## Despliegue en Google Cloud
 
@@ -34,7 +34,6 @@ Las variables de entorno se configuran desde Cloud Run, no quedan hardcodeadas e
 
 ```txt
 JWT_SECRET=<configurado en Cloud Run>
-GO_API_URL=https://interseguro-go-api-745150536858.europe-west1.run.app
 NODE_API_URL=https://interseguro-node-api-745150536858.europe-west1.run.app
 ```
 
@@ -45,11 +44,10 @@ Cloud Run inyecta `PORT` automaticamente en el contenedor, por eso no se configu
 ```txt
 PORT
 JWT_SECRET
-GO_API_URL
 NODE_API_URL
 ```
 
-`GO_API_URL` y `NODE_API_URL` se usan para documentacion Swagger y configuracion del servicio.
+`NODE_API_URL` se usa para publicar el servidor base en la documentacion Swagger.
 
 ## Ejecutar con Docker
 
@@ -72,7 +70,6 @@ docker run --rm --name interseguro-node-api \
   --network interseguro-net \
   -e PORT=8080 \
   -e JWT_SECRET=local-development-secret \
-  -e GO_API_URL=http://localhost:3000 \
   -e NODE_API_URL=http://localhost:3001 \
   -p 3001:8080 \
   interseguro-node-api

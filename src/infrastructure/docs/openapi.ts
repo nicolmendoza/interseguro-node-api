@@ -1,29 +1,23 @@
 type OpenApiSpecOptions = {
-  goApiUrl: string;
   nodeApiUrl: string;
 };
 
-export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) {
+export function createOpenApiSpec({ nodeApiUrl }: OpenApiSpecOptions) {
   return {
     openapi: '3.0.3',
     info: {
-      title: 'Interseguro Technical Challenge API',
+      title: 'Interseguro Node API',
       version: '1.0.0',
-      description: 'Documentacion Swagger para la API Go/Fiber de QR y la API Node/Express de estadisticas.',
+      description: 'Documentacion Swagger para la API Node/Express de estadisticas de matrices.',
     },
     servers: [
-      {
-        url: goApiUrl,
-        description: 'Go API',
-      },
       {
         url: nodeApiUrl,
         description: 'Node API',
       },
     ],
     tags: [
-      { name: 'Auth', description: 'Generacion de tokens JWT' },
-      { name: 'Go API', description: 'Factorizacion QR, rotacion y orquestacion entre APIs' },
+      { name: 'Health', description: 'Estado del servicio' },
       { name: 'Node API', description: 'Estadisticas de matrices' },
     ],
     components: {
@@ -47,13 +41,6 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
             [-4, 24, -41],
           ],
         },
-        MatrixRequest: {
-          type: 'object',
-          required: ['matrix'],
-          properties: {
-            matrix: { $ref: '#/components/schemas/Matrix' },
-          },
-        },
         MatricesRequest: {
           type: 'object',
           required: ['matrices'],
@@ -62,19 +49,6 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
               type: 'array',
               items: { $ref: '#/components/schemas/Matrix' },
             },
-          },
-        },
-        QRResult: {
-          type: 'object',
-          properties: {
-            q: { $ref: '#/components/schemas/Matrix' },
-            r: { $ref: '#/components/schemas/Matrix' },
-          },
-        },
-        RotationResult: {
-          type: 'object',
-          properties: {
-            rotated: { $ref: '#/components/schemas/Matrix' },
           },
         },
         MatrixStats: {
@@ -97,20 +71,6 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
             hasDiagonalMatrix: { type: 'boolean' },
           },
         },
-        AnalyzeResult: {
-          type: 'object',
-          properties: {
-            q: { $ref: '#/components/schemas/Matrix' },
-            r: { $ref: '#/components/schemas/Matrix' },
-            stats: { $ref: '#/components/schemas/MatrixStats' },
-          },
-        },
-        TokenResponse: {
-          type: 'object',
-          properties: {
-            token: { type: 'string' },
-          },
-        },
         ErrorResponse: {
           type: 'object',
           properties: {
@@ -120,117 +80,12 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
       },
     },
     paths: {
-      '/auth/token': {
-        post: {
-          tags: ['Auth'],
-          summary: 'Generar un token JWT',
-          servers: [{ url: goApiUrl }],
+      '/health': {
+        get: {
+          tags: ['Health'],
+          summary: 'Consultar estado del servicio',
           responses: {
-            200: {
-              description: 'JWT generado correctamente',
-              content: {
-                'application/json': {
-                  schema: {
-                    $ref: '#/components/schemas/TokenResponse',
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      '/qr': {
-        post: {
-          tags: ['Go API'],
-          summary: 'Calcular factorizacion QR',
-          servers: [{ url: goApiUrl }],
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/MatrixRequest' },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description: 'Resultado de la factorizacion QR',
-              content: {
-                'application/json': {
-                  schema: { $ref: '#/components/schemas/QRResult' },
-                },
-              },
-            },
-            400: { description: 'Matriz invalida' },
-            401: { description: 'JWT faltante o invalido' },
-          },
-        },
-      },
-      '/rotate': {
-        post: {
-          tags: ['Go API'],
-          summary: 'Rotar una matriz en sentido horario',
-          servers: [{ url: goApiUrl }],
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/MatrixRequest' },
-                example: {
-                  matrix: [
-                    [1, 2, 3],
-                    [4, 5, 6],
-                  ],
-                },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description: 'Matriz rotada',
-              content: {
-                'application/json': {
-                  schema: {
-                    $ref: '#/components/schemas/RotationResult',
-                  },
-                },
-              },
-            },
-            400: { description: 'Matriz invalida' },
-            401: { description: 'JWT faltante o invalido' },
-          },
-        },
-      },
-      '/analyze': {
-        post: {
-          tags: ['Go API'],
-          summary: 'Calcular QR y solicitar estadisticas a la API Node',
-          servers: [{ url: goApiUrl }],
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/MatrixRequest' },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description: 'Resultado QR y estadisticas',
-              content: {
-                'application/json': {
-                  schema: {
-                    $ref: '#/components/schemas/AnalyzeResult',
-                  },
-                },
-              },
-            },
-            400: { description: 'Matriz invalida' },
-            401: { description: 'JWT faltante o invalido' },
-            502: { description: 'API Node no disponible' },
+            200: { description: 'Servicio disponible' },
           },
         },
       },
@@ -238,7 +93,6 @@ export function createOpenApiSpec({ goApiUrl, nodeApiUrl }: OpenApiSpecOptions) 
         post: {
           tags: ['Node API'],
           summary: 'Calcular estadisticas de matrices',
-          servers: [{ url: nodeApiUrl }],
           security: [{ bearerAuth: [] }],
           requestBody: {
             required: true,

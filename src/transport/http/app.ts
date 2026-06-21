@@ -8,19 +8,17 @@ import { registerRoutes } from './routes.js';
 
 type AppDependencies = {
   jwtSecret: string;
-  goApiUrl?: string;
   nodeApiUrl?: string;
 };
 
 type ValidAppDependencies = {
   jwtSecret: string;
-  goApiUrl: string;
   nodeApiUrl: string;
 };
 
-export function createApp({ jwtSecret, goApiUrl, nodeApiUrl }: AppDependencies): Express {
+export function createApp({ jwtSecret, nodeApiUrl }: AppDependencies): Express {
   
-  const dependencies = { jwtSecret, goApiUrl, nodeApiUrl };
+  const dependencies = { jwtSecret, nodeApiUrl };
   validateDependencies(dependencies);
 
   const app = express();
@@ -44,13 +42,10 @@ export function createApp({ jwtSecret, goApiUrl, nodeApiUrl }: AppDependencies):
 
 function validateDependencies(dependencies: AppDependencies): asserts dependencies is ValidAppDependencies {
 
-  const { jwtSecret, goApiUrl, nodeApiUrl } = dependencies;
+  const { jwtSecret, nodeApiUrl } = dependencies;
 
   if (!jwtSecret) {
     throw new Error('jwtSecret es requerido');
-  }
-  if (!goApiUrl) {
-    throw new Error('goApiUrl es requerido');
   }
   if (!nodeApiUrl) {
     throw new Error('nodeApiUrl es requerido');

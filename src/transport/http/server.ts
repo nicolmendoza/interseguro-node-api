@@ -2,9 +2,9 @@ import { getConfig } from '../../infrastructure/config/config.js';
 import { createApp } from './app.js';
 
 export function startHttpServer() {
-  const { port, jwtSecret, goApiUrl, nodeApiUrl } = getConfig();
+  const { port, jwtSecret, nodeApiUrl } = getConfig();
 
-  return createApp({ jwtSecret, goApiUrl, nodeApiUrl }).listen(port, () => {
+  return createApp({ jwtSecret, nodeApiUrl }).listen(port, () => {
     console.log(`Node API escuchando en el puerto ${port}`);
   });
 }
