@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { type Express } from 'express';
+import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 import { createOpenApiSpec } from '../../infrastructure/docs/openapi.js';
 import { openApiJsonHandler } from './handlers/docs.handler.js';
@@ -8,23 +9,44 @@ import { registerRoutes } from './routes.js';
 
 type AppDependencies = {
   jwtSecret: string;
+  frontendUrl: string;
+  rateLimitMax: number;
+  rateLimitWindowSeconds: number;
   nodeApiUrl?: string;
 };
 
 type ValidAppDependencies = {
   jwtSecret: string;
+  frontendUrl: string;
+  rateLimitMax: number;
+  rateLimitWindowSeconds: number;
   nodeApiUrl: string;
 };
 
-export function createApp({ jwtSecret, nodeApiUrl }: AppDependencies): Express {
+export function createApp({
+  jwtSecret,
+  frontendUrl,
+  rateLimitMax,
+  rateLimitWindowSeconds,
+  nodeApiUrl,
+}: AppDependencies): Express {
   
-  const dependencies = { jwtSecret, nodeApiUrl };
+  const dependencies = { jwtSecret, frontendUrl, rateLimitMax, rateLimitWindowSeconds, nodeApiUrl };
   validateDependencies(dependencies);
 
   const app = express();
   const openApiSpec = createOpenApiSpec(dependencies);
 
-  app.use(cors());
+  app.use(cors({ origin: dependencies.frontendUrl }));
+  app.use(
+    rateLimit({
+      windowMs: dependencies.rateLimitWindowSeconds * 1000,
+      limit: dependencies.rateLimitMax,
+      standardHeaders: 'draft-7',
+      legacyHeaders: false,
+      message: { error: 'demasiadas solicitudes, intenta nuevamente mas tarde' },
+    }),
+  );
   app.use(express.json({ limit: '1mb' }));
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
@@ -42,10 +64,19 @@ export function createApp({ jwtSecret, nodeApiUrl }: AppDependencies): Express {
 
 function validateDependencies(dependencies: AppDependencies): asserts dependencies is ValidAppDependencies {
 
-  const { jwtSecret, nodeApiUrl } = dependencies;
+  const { jwtSecret, frontendUrl, rateLimitMax, rateLimitWindowSeconds, nodeApiUrl } = dependencies;
 
   if (!jwtSecret) {
     throw new Error('jwtSecret es requerido');
+  }
+  if (!frontendUrl) {
+    throw new Error('frontendUrl es requerido');
+  }
+  if (!Number.isFinite(rateLimitMax) || rateLimitMax <= 0) {
+    throw new Error('rateLimitMax debe ser un numero positivo');
+  }
+  if (!Number.isFinite(rateLimitWindowSeconds) || rateLimitWindowSeconds <= 0) {
+    throw new Error('rateLimitWindowSeconds debe ser un numero positivo');
   }
   if (!nodeApiUrl) {
     throw new Error('nodeApiUrl es requerido');

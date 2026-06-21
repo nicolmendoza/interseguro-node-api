@@ -34,6 +34,9 @@ Las variables de entorno se configuran desde Cloud Run, no quedan hardcodeadas e
 
 ```txt
 JWT_SECRET=<configurado en Cloud Run>
+FRONTEND_URL=https://interseguro-technical-challenge-745150536858.europe-west1.run.app
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW_SECONDS=60
 NODE_API_URL=https://interseguro-node-api-745150536858.europe-west1.run.app
 ```
 
@@ -44,9 +47,14 @@ Cloud Run inyecta `PORT` automaticamente en el contenedor, por eso no se configu
 ```txt
 PORT
 JWT_SECRET
+FRONTEND_URL
+RATE_LIMIT_MAX
+RATE_LIMIT_WINDOW_SECONDS
 NODE_API_URL
 ```
 
+`FRONTEND_URL` restringe CORS al dominio del frontend.
+`RATE_LIMIT_MAX` y `RATE_LIMIT_WINDOW_SECONDS` controlan el limite de solicitudes por ventana de tiempo.
 `NODE_API_URL` se usa para publicar el servidor base en la documentacion Swagger.
 
 ## Ejecutar con Docker
@@ -70,6 +78,9 @@ docker run --rm --name interseguro-node-api \
   --network interseguro-net \
   -e PORT=8080 \
   -e JWT_SECRET=local-development-secret \
+  -e FRONTEND_URL=http://localhost:3002 \
+  -e RATE_LIMIT_MAX=100 \
+  -e RATE_LIMIT_WINDOW_SECONDS=60 \
   -e NODE_API_URL=http://localhost:3001 \
   -p 3001:8080 \
   interseguro-node-api

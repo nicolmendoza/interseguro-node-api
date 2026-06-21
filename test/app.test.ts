@@ -7,6 +7,9 @@ describe('POST /stats', () => {
   const jwtSecret = 'test-secret';
   const app = createApp({
     jwtSecret,
+    frontendUrl: 'http://frontend-test.com',
+    rateLimitMax: 100,
+    rateLimitWindowSeconds: 60,
     nodeApiUrl: 'http://node-api-test.com',
   });
 
