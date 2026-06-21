@@ -28,13 +28,13 @@ La documentacion Swagger se sirve desde la API Node y usa las variables `GO_API_
 
 ## Despliegue en Google Cloud
 
-Los tres servicios estan desplegados en Google Cloud Run:
+Los tres servicios fueron desplegados en Google Cloud Run usando contenedores Docker:
 
 - `interseguro-node-api`: API Node/Express para estadisticas y documentacion Swagger/OpenAPI.
 - `interseguro-go-api`: API Go/Fiber para QR, rotacion y orquestacion.
 - `interseguro-frontend`: aplicacion Next.js que consume ambas APIs.
 
-Cada servicio se construye como imagen Docker y se despliega de forma independiente. El codigo fuente esta versionado en GitHub y Cloud Build queda conectado al repositorio correspondiente para compilar la imagen y publicar una nueva revision en Cloud Run cuando se suben cambios.
+Cada servicio se construye como imagen Docker y se despliega de forma independiente en Cloud Run. El codigo fuente esta versionado en GitHub y Cloud Build queda conectado al repositorio correspondiente para compilar la imagen y publicar una nueva revision cuando se suben cambios.
 
 Las variables de entorno se configuran desde Cloud Run, no quedan hardcodeadas en el codigo fuente. En produccion la API Node usa:
 
